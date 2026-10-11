@@ -1,48 +1,25 @@
-/**
- * For more details on how to configure Wrangler, refer to:
- * https://developers.cloudflare.com/workers/wrangler/configuration/
- */
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "wakalyst-auth",
-	"main": "src/index.ts",
-	"compatibility_date": "2025-05-21",
-	"observability": {
-		"enabled": true,
-	},
-	/**
-	 * Smart Placement
-	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
-	 */
-	// "placement": { "mode": "smart" },
-	/**
-	 * Bindings
-	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
-	 * databases, object storage, AI inference, real-time communication and more.
-	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
-	 */
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 */
-	// "vars": { "MY_VARIABLE": "production_value" },
-	/**
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-	/**
-	 * Static Assets
-	 * https://developers.cloudflare.com/workers/static-assets/binding/
-	 */
-	// "assets": { "directory": "./public/", "binding": "ASSETS" },
-	/**
-	 * Service Bindings (communicate between multiple Workers)
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
-	 */
-	"kv_namespaces": [
-		{
-			"binding": "AUTH_STATES",
-			"id": "c52b4c6f01124c848d4050597a5cf020",
-		},
-	],
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wakalyst-auth",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    // Comma-separated. An entry ending in "/" matches any URL that starts with it;
+    // any other entry must match exactly. CORS origins are derived from the http(s) entries.
+    "ALLOWED_REDIRECTS": "wakalyst://auth,http://localhost:8081/",
+    // Comma-separated WakaTime OAuth scopes.
+    "WAKATIME_SCOPES": "read_stats,read_summaries"
+  },
+  // Secrets, set with `wrangler secret put` (and in .dev.vars for `wrangler dev`):
+  // WAKATIME_CLIENT_ID, WAKATIME_CLIENT_SECRET
+  "kv_namespaces": [
+    {
+      // OAuth states (5 min) and native one-time codes (60 s).
+      "binding": "AUTH_STATES",
+      "id": "c52b4c6f01124c848d4050597a5cf020"
+    }
+  ]
 }

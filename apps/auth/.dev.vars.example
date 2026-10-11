@@ -1,0 +1,4 @@
+WAKATIME_CLIENT_ID=
+WAKATIME_CLIENT_SECRET=
+# Expo Go during development redirects to exp://<lan-ip>:8081/--/auth
+ALLOWED_REDIRECTS=wakalyst://auth,exp://,http://localhost:8081/

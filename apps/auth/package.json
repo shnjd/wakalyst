@@ -1,15 +1,25 @@
 {
-	"name": "wakalyst-auth",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"cf-typegen": "wrangler types"
-	},
-	"devDependencies": {
-		"typescript": "^5.5.2",
-		"wrangler": "^4.16.0"
-	}
+  "name": "@wakalyst/auth-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typegen": "wrangler types --strict-vars=false --env-file .dev.vars.example",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@wakalyst/api": "workspace:*",
+    "@wakalyst/auth": "workspace:*",
+    "hono": "^4.13.13",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@wakalyst/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "^4.149.0"
+  }
 }

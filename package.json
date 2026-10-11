@@ -1,31 +1,22 @@
 {
+  "name": "wakalyst",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "packages/@waka/*"
-  ],
+  "packageManager": "pnpm@12.11.2",
+  "engines": {
+    "node": ">=22.13"
+  },
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "lint": "eslint . --fix",
-    "format": "prettier . --write",
-    "prepare": "husky"
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "check": "biome check .",
+    "fix": "biome check --write .",
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "eslint-config-expo": "~8.0.1",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.4.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.0.0",
-    "prettier": "^3.5.3",
-    "turbo": "^2.5.3"
-  },
-  "packageManager": "yarn@1.22.19",
-  "engines": {
-    "node": ">=18"
-  },
-  "name": "with-react-native-web"
+    "@biomejs/biome": "2.5.15",
+    "turbo": "^2.11.7",
+    "typescript": "catalog:"
+  }
 }
