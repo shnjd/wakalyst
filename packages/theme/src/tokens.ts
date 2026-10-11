@@ -1,12 +1,15 @@
 import palette from "./palette.json";
 
 export const THEME = {
+  /** Pixels, on a 4px grid. */
   spacing: {
-    xs: 2,
-    sm: 2.5,
-    md: 3,
-    lg: 3.5,
-    xl: 4,
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    "2xl": 32,
+    "3xl": 48,
   },
   radius: {
     "2xs": 4,
@@ -62,3 +65,4 @@ export function colorsFor(scheme: ColorScheme | null | undefined) {
 
 export type TSpacing = keyof typeof THEME.spacing;
 export type IconSize = keyof typeof THEME.iconSize;
+export type FontSize = keyof typeof THEME.fontSize;
