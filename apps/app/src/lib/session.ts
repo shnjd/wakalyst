@@ -5,6 +5,7 @@ import {
   type SessionStorage,
   tokenSetSchema,
 } from "@wakalyst/auth";
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import * as Crypto from "expo-crypto";
 import * as Linking from "expo-linking";
 import * as SecureStore from "expo-secure-store";
@@ -43,12 +44,26 @@ async function pkceChallenge(verifier: string): Promise<string> {
 }
 
 /**
+ * Where the Worker sends the browser back to. Builds use the app's own scheme;
+ * `Linking.createURL` can fold the dev server's host into it in development
+ * builds, which the Worker's allowlist would reject. Expo Go has no custom
+ * scheme, so it gets `exp://<host>/--/auth`.
+ */
+function authRedirectUri(): string {
+  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) {
+    return Linking.createURL("auth");
+  }
+  const scheme = Constants.expoConfig?.scheme;
+  return `${(Array.isArray(scheme) ? scheme[0] : scheme) ?? "wakalyst"}://auth`;
+}
+
+/**
  * Opens WakaTime sign-in in the system browser. Resolves `true` once tokens
  * are stored, `false` if the user closed the browser.
  */
 export async function signIn(): Promise<boolean> {
   const verifier = toHex(Crypto.getRandomBytes(32));
-  const redirectUri = Linking.createURL("auth");
+  const redirectUri = authRedirectUri();
   const url = auth.authorizeUrl({
     platform: "native",
     redirectUri,
