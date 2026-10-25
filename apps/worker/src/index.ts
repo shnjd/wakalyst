@@ -93,7 +93,8 @@ app.use("*", (c, next) =>
 );
 
 app.onError((err, c) => {
-  console.error(err);
+  // Workers Logs can drop the first line of a stack, so log the message on its own.
+  console.error(`${c.req.method} ${c.req.path} failed: ${err.name}: ${err.message}`, err.stack);
   return c.text("server_error", 500);
 });
 

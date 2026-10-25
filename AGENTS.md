@@ -20,7 +20,7 @@ pnpm typecheck                       # tsc in every package
 pnpm test                            # Vitest in every package
 pnpm --filter @wakalyst/app build    # web export of the Expo app
 pnpm --filter @wakalyst/app dev      # Expo dev server
-pnpm --filter @wakalyst/auth-worker dev   # auth Worker on :8787
+pnpm --filter @wakalyst/worker dev   # auth Worker on :8787
 ```
 
 Before calling a task done, run `pnpm check`, `pnpm typecheck` and `pnpm test`.

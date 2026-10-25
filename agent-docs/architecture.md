@@ -5,7 +5,7 @@
 ```
 apps/
   app/        Expo SDK 57 app (Expo Router): iOS, Android, web
-  auth/       Cloudflare Worker (Hono): OAuth with WakaTime, web API proxy
+  worker/     Cloudflare Worker (Hono): OAuth with WakaTime, web API proxy
 packages/
   api/        Typed WakaTime client + Zod schemas. No React.
   auth/       Token model, auth Worker client, native and web fetchers. No React.

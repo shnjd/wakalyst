@@ -14,10 +14,10 @@ Create an app at https://wakatime.com/apps and add the Worker's callback as a
 redirect URI, for example `http://localhost:8787/callback` for local work and
 `https://wakalyst-auth.<account>.workers.dev/callback` once deployed.
 
-## Auth Worker (`apps/auth`)
+## Auth Worker (`apps/worker`, deployed as `wakalyst-auth`)
 
 ```bash
-cd apps/auth
+cd apps/worker
 cp .dev.vars.example .dev.vars        # fill in the client ID and secret
 pnpm dev                              # http://localhost:8787
 ```
