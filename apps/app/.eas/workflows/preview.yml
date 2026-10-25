@@ -1,0 +1,21 @@
+# Installable Android build (APK, internal distribution) for every push to
+# main that touches the app or a package it bundles. Run by hand with
+# `eas workflow:run .eas/workflows/preview.yml` from apps/app.
+name: Preview build
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - apps/app/**
+      - packages/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+
+jobs:
+  build_android:
+    name: Build Android (preview)
+    type: build
+    params:
+      platform: android
+      profile: preview
