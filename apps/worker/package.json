@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "dev": "mkdir -p ../app/dist && wrangler dev",
+    "deploy": "pnpm --filter @wakalyst/app build:hosted && wrangler deploy",
     "typegen": "wrangler types --strict-vars=false --env-file .dev.vars.example",
     "typecheck": "tsc",
     "test": "vitest run"

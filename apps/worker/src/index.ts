@@ -37,7 +37,11 @@ function oauthConfig(c: Ctx): OAuthConfig {
   };
 }
 
-const allowList = (c: Ctx) => parseAllowList(c.env.ALLOWED_REDIRECTS);
+/** `ALLOWED_REDIRECTS` plus this Worker's own origin, which serves the web app. */
+const allowList = (c: Ctx) => [
+  ...parseAllowList(c.env.ALLOWED_REDIRECTS),
+  `${new URL(c.req.url).origin}/`,
+];
 
 /** Cookie-authenticated POSTs must come from an allowed web origin (CSRF guard). */
 const fromAllowedOrigin = (c: Ctx) =>
@@ -141,6 +145,12 @@ app.get("/callback", async (c) => {
   if (pending.platform === "native") {
     const handoff = await saveHandoff(c.env.AUTH_STATES, tokens, pending.codeChallenge);
     return c.redirect(withQuery(pending.redirectUri, { code: handoff }));
+  }
+
+  // Every sign-in mints a new WakaTime token, so revoke the one this browser held before.
+  const previous = getCookie(c, ACCESS_COOKIE, "host");
+  if (previous && previous !== tokens.accessToken) {
+    await revokeToken(oauthConfig(c), previous).catch((err) => console.error("revoke failed", err));
   }
 
   setSessionCookies(c, tokens);

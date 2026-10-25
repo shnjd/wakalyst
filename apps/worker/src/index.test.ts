@@ -50,7 +50,12 @@ beforeEach(() => {
         return new Response("invalid_grant", { status: 400 });
       }
       const expiresIn = form.get("code") === "long-lived" ? 2 * 365 * 24 * 60 * 60 : 3600;
-      return Response.json({ access_token: "at", refresh_token: "rt", expires_in: expiresIn });
+      const accessToken = form.get("code") === "second" ? "at-2" : "at";
+      return Response.json({
+        access_token: accessToken,
+        refresh_token: "rt",
+        expires_in: expiresIn,
+      });
     }
     if (pathname === "/oauth/revoke") return new Response(null, { status: 200 });
     if (pathname === "/api/v1/users/current") return Response.json({ data: { id: "u1" } });
@@ -241,6 +246,40 @@ describe("web sign-in", () => {
     expect(revoked.status).toBe(204);
     for (const c of revoked.headers.getSetCookie()) expect(c).toContain("Max-Age=0");
     expect(new URL(wakatimeRequests.at(-1)?.url ?? "").pathname).toBe("/oauth/revoke");
+  });
+
+  it("trusts the Worker's own origin, which serves the web app", async () => {
+    const own = await request(
+      `/authorize?platform=web&redirect_uri=${encodeURIComponent(`${ORIGIN}/`)}`,
+    );
+    expect(own.status).toBe(302);
+    const state = new URL(own.headers.get("Location") ?? "").searchParams.get("state") ?? "";
+    const signedIn = await callback(state);
+    expect(signedIn.headers.get("Location")).toBe(`${ORIGIN}/`);
+
+    const refreshed = await post("/refresh", undefined, {
+      Cookie: cookieHeader(signedIn),
+      Origin: ORIGIN,
+    });
+    expect(refreshed.status).toBe(204);
+  });
+
+  it("revokes the token the browser held before signing in again", async () => {
+    const { state } = await startSignIn("web");
+    const cookie = cookieHeader(await callback(state));
+
+    const { state: again } = await startSignIn("web");
+    const before = wakatimeRequests.length;
+    const res = await request(`/callback?state=${again}&code=second`, {
+      headers: { Cookie: cookie },
+    });
+    expect(res.status).toBe(302);
+
+    const revokes = wakatimeRequests
+      .slice(before)
+      .filter((r) => new URL(r.url).pathname === "/oauth/revoke");
+    expect(revokes).toHaveLength(1);
+    expect(new URLSearchParams(await revokes[0]?.text()).get("token")).toBe("at");
   });
 
   it("answers CORS only for allowed origins", async () => {

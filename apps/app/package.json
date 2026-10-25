@@ -10,6 +10,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "expo export --platform web",
+    "build:hosted": "EXPO_PUBLIC_AUTH_URL=/ expo export --clear --platform web",
     "typecheck": "tsc --noEmit",
     "doctor": "expo-doctor"
   },

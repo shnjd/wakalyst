@@ -54,6 +54,13 @@ the current-user query fails with it.
    `/revoke` revokes at WakaTime (native: access token in the body; web:
    cookie, which it also clears).
 
+In production the Worker also serves the web build as static assets
+(`assets` in `wrangler.jsonc`); only the routes above run Worker code. That
+keeps the web app same-origin, the only setup where every browser sends the
+cookies. The Worker always accepts its own origin as a return URL and CORS
+origin. A web sign-in also revokes the token the browser's old cookie held,
+since every sign-in mints a new WakaTime token.
+
 Cookie-authenticated POSTs must carry an `Origin` from the allowlist (CSRF
 guard). CORS allows the origins of the allowlist's http(s) entries, with
 credentials. Errors from WakaTime come back to the app as `?error=…`.
