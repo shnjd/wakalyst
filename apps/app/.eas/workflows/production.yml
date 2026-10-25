@@ -1,0 +1,21 @@
+# Store builds for both platforms on a version tag (v1.2.3). iOS needs Apple
+# credentials set up once with `eas credentials:configure-build -p ios -e production`.
+name: Production build
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build_android:
+    name: Build Android (production)
+    type: build
+    params:
+      platform: android
+      profile: production
+  build_ios:
+    name: Build iOS (production)
+    type: build
+    params:
+      platform: ios
+      profile: production

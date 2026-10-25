@@ -73,3 +73,27 @@ Firefox (Total Cookie Protection), Safari and any browser blocking third-party
 cookies drop them otherwise. So the deployed web app is served by the Worker
 itself (same origin). The cookies stay `SameSite=None` so local development
 across ports and Chrome's default settings keep working.
+
+## CI/CD
+
+- **Checks** (`.github/workflows/ci.yml`, job `check`): lint, typecheck,
+  tests, `expo install --check` and a web export on every PR and push to main.
+- **Auth Worker** (same file, job `deploy-worker`): after `check` passes on a
+  push to main, runs `pnpm run deploy` in `apps/worker`, which builds the
+  hosted web app and deploys `wakalyst-auth` with it. Needs the GitHub
+  repository secrets `CLOUDFLARE_API_TOKEN` (the "Edit Cloudflare Workers"
+  template) and `CLOUDFLARE_ACCOUNT_ID`. The WakaTime secrets stay on the
+  Worker; a deploy doesn't touch them.
+- **App builds** run on EAS Workflows (`apps/app/.eas/workflows`), configured
+  by `apps/app/eas.json`. They need the GitHub repository linked to the Expo
+  project with base directory `apps/app`
+  (expo.dev → project → GitHub settings).
+  - `preview.yml`: Android APK (internal distribution) on pushes to main that
+    touch the app, `packages/` or the lockfile.
+  - `production.yml`: Android and iOS store builds on a `v*` tag. iOS needs
+    Apple credentials first: `eas credentials:configure-build -p ios -e production`.
+  - Run either by hand from `apps/app`: `npx eas-cli workflow:run .eas/workflows/preview.yml`.
+
+Native builds point at the deployed Worker through `EXPO_PUBLIC_AUTH_URL` in
+`eas.json`. Build numbers live on EAS (`appVersionSource: remote`) and
+production builds bump them automatically.
