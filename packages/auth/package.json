@@ -1,0 +1,23 @@
+{
+  "name": "@wakalyst/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./session": "./src/session.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@wakalyst/api": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@wakalyst/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

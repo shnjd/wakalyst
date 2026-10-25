@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wakalyst-auth",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  // The web app (apps/app web export) is served from this Worker, so its API
+  // calls are same-origin and its cookies first-party in every browser.
+  // `pnpm run deploy` builds it first.
+  "assets": {
+    "directory": "../app/dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/authorize", "/callback", "/token", "/refresh", "/revoke", "/api/*"]
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false
+    }
+  },
+  "vars": {
+    // Comma-separated. An entry ending in "/" matches any URL that starts with it;
+    // any other entry must match exactly. CORS origins are derived from the http(s) entries.
+    "ALLOWED_REDIRECTS": "wakalyst://auth,http://localhost:8081/",
+    // Comma-separated WakaTime OAuth scopes.
+    "WAKATIME_SCOPES": "read_stats,read_summaries"
+  },
+  // Secrets, set with `wrangler secret put` (and in .dev.vars for `wrangler dev`):
+  // WAKATIME_CLIENT_ID, WAKATIME_CLIENT_SECRET
+  "kv_namespaces": [
+    {
+      // OAuth states (5 min) and native one-time codes (60 s).
+      "binding": "AUTH_STATES",
+      "id": "c52b4c6f01124c848d4050597a5cf020"
+    }
+  ]
+}

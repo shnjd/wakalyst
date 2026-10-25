@@ -1,0 +1,28 @@
+{
+  "name": "@wakalyst/query",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@wakalyst/api": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "@types/react": "~19.2.2",
+    "@wakalyst/tsconfig": "workspace:*",
+    "react": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

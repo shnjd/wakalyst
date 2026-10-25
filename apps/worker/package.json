@@ -1,0 +1,25 @@
+{
+  "name": "@wakalyst/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mkdir -p ../app/dist && wrangler dev",
+    "deploy": "pnpm --filter @wakalyst/app build:hosted && wrangler deploy",
+    "typegen": "wrangler types --strict-vars=false --env-file .dev.vars.example",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@wakalyst/api": "workspace:*",
+    "@wakalyst/auth": "workspace:*",
+    "hono": "^4.13.13",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@wakalyst/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "^4.149.0"
+  }
+}
