@@ -16,11 +16,14 @@ catalog:
   "@tanstack/react-query": ^5.104.1
   zustand: ^5.0.15
 
-# pnpm auto-installs peers at their latest version. Pin the ones Expo SDK 57
+# pnpm auto-installs peers (optional ones too, like expo-router's reanimated and
+# gesture-handler) at their latest version. Pin the ones Expo SDK 57
 # expects so native builds don't autolink an unsupported version.
 minimumReleaseAgeExclude:
   - zod@4.6.6
 
 overrides:
   react-native-worklets: 0.10.1
+  react-native-reanimated: 4.5.1
+  react-native-gesture-handler: ~2.32.0
   "@react-native/metro-config": 0.86.3
