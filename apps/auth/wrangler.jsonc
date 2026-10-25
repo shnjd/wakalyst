@@ -4,7 +4,13 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "observability": {
-    "enabled": true
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false
+    }
   },
   "vars": {
     // Comma-separated. An entry ending in "/" matches any URL that starts with it;
