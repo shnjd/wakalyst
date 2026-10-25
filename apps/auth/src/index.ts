@@ -22,7 +22,8 @@ type Ctx = Context<AppEnv>;
 
 const ACCESS_COOKIE = "wk_at";
 const REFRESH_COOKIE = "wk_rt";
-const REFRESH_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
+/** Browsers cap cookie lifetimes at 400 days, and Hono refuses to set a longer Max-Age. */
+const MAX_COOKIE_AGE = 400 * 24 * 60 * 60;
 
 // "__Host-" cookies: Secure, Path=/, no Domain. SameSite=None so a web app on
 // another site can still send them with `credentials: "include"`.
@@ -43,11 +44,15 @@ const fromAllowedOrigin = (c: Ctx) =>
   allowedOrigins(allowList(c)).has(c.req.header("Origin") ?? "");
 
 function setSessionCookies(c: Ctx, tokens: TokenSet) {
-  const maxAge = Math.max(0, Math.floor((tokens.expiresAt - Date.now()) / 1000));
+  // WakaTime access tokens can outlive the cookie cap; /refresh renews them after that.
+  const maxAge = Math.min(
+    MAX_COOKIE_AGE,
+    Math.max(0, Math.floor((tokens.expiresAt - Date.now()) / 1000)),
+  );
   setCookie(c, ACCESS_COOKIE, tokens.accessToken, { ...cookieBase, maxAge });
   setCookie(c, REFRESH_COOKIE, tokens.refreshToken, {
     ...cookieBase,
-    maxAge: REFRESH_COOKIE_MAX_AGE,
+    maxAge: MAX_COOKIE_AGE,
   });
 }
 

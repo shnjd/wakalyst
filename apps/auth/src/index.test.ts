@@ -49,7 +49,8 @@ beforeEach(() => {
       if (form.get("code") === "bad" || form.get("refresh_token") === "bad") {
         return new Response("invalid_grant", { status: 400 });
       }
-      return Response.json({ access_token: "at", refresh_token: "rt", expires_in: 3600 });
+      const expiresIn = form.get("code") === "long-lived" ? 2 * 365 * 24 * 60 * 60 : 3600;
+      return Response.json({ access_token: "at", refresh_token: "rt", expires_in: expiresIn });
     }
     if (pathname === "/oauth/revoke") return new Response(null, { status: 200 });
     if (pathname === "/api/v1/users/current") return Response.json({ data: { id: "u1" } });
@@ -199,6 +200,15 @@ describe("web sign-in", () => {
       expect(cookie).toContain("HttpOnly");
       expect(cookie).toContain("Secure");
       expect(cookie).toContain("SameSite=None");
+    }
+  });
+
+  it("caps cookie lifetimes at 400 days for long-lived tokens", async () => {
+    const { state } = await startSignIn("web");
+    const res = await callback(state, "long-lived");
+    expect(res.status).toBe(302);
+    for (const cookie of res.headers.getSetCookie()) {
+      expect(cookie).toContain(`Max-Age=${400 * 24 * 60 * 60}`);
     }
   });
 
